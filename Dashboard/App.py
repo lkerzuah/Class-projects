@@ -1,11 +1,12 @@
+import sns
 import streamlit as st
 import pandas as pd
-from seaborn import lineplot, barplot, regplot
+import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 import os
 
-
+from seaborn import barplot, lineplot, regplot
 
 st.set_page_config(layout="wide",
                    initial_sidebar_state="expanded",
