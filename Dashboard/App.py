@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
+from seaborn import lineplot, barplot, regplot
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 import os
@@ -55,7 +55,7 @@ if selection == 'Business Snapshot':
         st.subheader("Monthly Revenue Overview")
         df_revenue = df.groupby(["InvoiceMonth", "InvoiceYear"])["Revenue"].sum().reset_index()
         plt.figure(figsize=(15, 10))
-        sns.barplot(x="InvoiceMonth", y="Revenue", hue="InvoiceYear", data=df_revenue)
+        barplot(x="InvoiceMonth", y="Revenue", hue="InvoiceYear", data=df_revenue)
         plt.title("Monthly Revenue")
         plt.xlabel("Month")
         plt.ylabel("Revenue")
@@ -67,7 +67,7 @@ if selection == 'Business Snapshot':
             st.subheader("Monthly Items Sold Overview")
             df_quantity = df.groupby(["InvoiceMonth", "InvoiceYear"])["Quantity"].sum().reset_index()
             plt.figure(figsize=(15, 10))
-            sns.barplot(x="InvoiceMonth", y="Quantity", data=df_quantity)
+            barplot(x="InvoiceMonth", y="Quantity", data=df_quantity)
             plt.title("Monthly Items Sold")
             plt.xlabel("Month")
             plt.ylabel("Items Sold")
@@ -79,7 +79,7 @@ if selection == 'Business Snapshot':
         # Monthly Active Customers
         df_active = df.groupby(["InvoiceMonth", "InvoiceYear"])["CustomerID"].nunique().reset_index()
         plt.figure(figsize=(15, 10))
-        sns.barplot(x="InvoiceMonth", y="CustomerID", hue="InvoiceYear", data=df_active)
+        barplot(x="InvoiceMonth", y="CustomerID", hue="InvoiceYear", data=df_active)
         plt.title("Monthly Active Users")
         plt.xlabel("Month")
         plt.ylabel("Active Users")
@@ -90,7 +90,7 @@ if selection == 'Business Snapshot':
                 st.subheader("Average Revenue per Month")
                 df_revenue_avg = df.groupby(["InvoiceMonth", "InvoiceYear"])["Revenue"].mean().reset_index()
                 plt.figure(figsize=(15, 10))
-                sns.barplot(x="InvoiceMonth", y="Revenue", data=df_revenue)
+                barplot(x="InvoiceMonth", y="Revenue", data=df_revenue)
                 plt.title("Monthly Average Revenue ")
                 plt.xlabel("Month")
                 plt.ylabel("Revenue")
@@ -101,7 +101,7 @@ if selection == 'Business Snapshot':
             st.subheader("Customer Growth (2011)")
             df_active_2011 = df_active[df_active['InvoiceYear'] != 2010]
             plt.figure(figsize=(15, 10))
-            sns.regplot(x="InvoiceMonth", y="CustomerID", data=df_active_2011)
+            regplot(x="InvoiceMonth", y="CustomerID", data=df_active_2011)
             plt.title("Customer Growth 2011")
             plt.ylabel("Customers")
             plt.xlabel("Months")
@@ -119,7 +119,7 @@ if selection == 'Business Snapshot':
             df_new_revenue = df.groupby(["InvoiceMonth", "InvoiceYear", "UserType"])["Revenue"].sum().reset_index()
             df_new_revenue["Revenue"] = df_new_revenue["Revenue"] / 1000000
             plt.figure(figsize=(15, 10))
-            sns.lineplot(x="InvoiceMonth", y="Revenue", hue="UserType", data=df_new_revenue)
+            lineplot(x="InvoiceMonth", y="Revenue", hue="UserType", data=df_new_revenue)
             plt.title("New vs Existing Customers Revenue Overview")
             plt.xlabel("Month")
             plt.ylabel("Revenue (In millions)")
