@@ -16,6 +16,8 @@ st.set_page_config(layout="wide",
 # Load the available data and overview
 path = os.path.dirname(__file__)
 path = os.path.join(path, "dataonline.csv")
+
+
 @st.cache_data
 def load_data(data_path):
     dataframe = pd.read_csv(data_path, encoding="ISO-8859-1", low_memory=False)
@@ -24,6 +26,7 @@ def load_data(data_path):
     dataframe["InvoiceMonth"] = pd.DatetimeIndex(dataframe["InvoiceDate"]).month
     dataframe["InvoiceYear"] = pd.DatetimeIndex(dataframe["InvoiceDate"]).year
     return dataframe
+
 
 st.sidebar.header('Deja Vu Stores')
 data = st.sidebar.file_uploader("Upload Dataset", type=['csv', 'txt', 'xlsx'])
@@ -86,46 +89,46 @@ if selection == 'Business Snapshot':
         st.pyplot(plt)
 
     with col4:
-                # Monthly Items Sold Overview
-                st.subheader("Average Revenue per Month")
-                df_revenue_avg = df.groupby(["InvoiceMonth", "InvoiceYear"])["Revenue"].mean().reset_index()
-                plt.figure(figsize=(15, 10))
-                barplot(x="InvoiceMonth", y="Revenue", data=df_revenue)
-                plt.title("Monthly Average Revenue ")
-                plt.xlabel("Month")
-                plt.ylabel("Revenue")
-                st.pyplot(plt)
+        # Monthly Items Sold Overview
+        st.subheader("Average Revenue per Month")
+        df_revenue_avg = df.groupby(["InvoiceMonth", "InvoiceYear"])["Revenue"].mean().reset_index()
+        plt.figure(figsize=(15, 10))
+        barplot(x="InvoiceMonth", y="Revenue", data=df_revenue)
+        plt.title("Monthly Average Revenue ")
+        plt.xlabel("Month")
+        plt.ylabel("Revenue")
+        st.pyplot(plt)
 
     col5, col6 = st.columns(2)
     with col5:
-            st.subheader("Customer Growth (2011)")
-            df_active_2011 = df_active[df_active['InvoiceYear'] != 2010]
-            plt.figure(figsize=(15, 10))
-            regplot(x="InvoiceMonth", y="CustomerID", data=df_active_2011)
-            plt.title("Customer Growth 2011")
-            plt.ylabel("Customers")
-            plt.xlabel("Months")
-            st.pyplot(plt)
+        st.subheader("Customer Growth (2011)")
+        df_active_2011 = df_active[df_active['InvoiceYear'] != 2010]
+        plt.figure(figsize=(15, 10))
+        regplot(x="InvoiceMonth", y="CustomerID", data=df_active_2011)
+        plt.title("Customer Growth 2011")
+        plt.ylabel("Customers")
+        plt.xlabel("Months")
+        st.pyplot(plt)
 
     with col6:
-            # New vs Existing Users
-            st.subheader("New vs Existing Users")
-            df_first_purchase = df.groupby(["CustomerID"])["InvoiceDate"].min().reset_index()
-            df_first_purchase.columns = ["CustomerID", "FirstPurchaseDate"]
-            df = pd.merge(df, df_first_purchase, on="CustomerID")
-            df["UserType"] = "New"
-            df.loc[df["InvoiceDate"] > df["FirstPurchaseDate"], "UserType"] = "Existing"
-            # New vs Existing User Revenue Analysis
-            df_new_revenue = df.groupby(["InvoiceMonth", "InvoiceYear", "UserType"])["Revenue"].sum().reset_index()
-            df_new_revenue["Revenue"] = df_new_revenue["Revenue"] / 1000000
-            plt.figure(figsize=(15, 10))
-            lineplot(x="InvoiceMonth", y="Revenue", hue="UserType", data=df_new_revenue)
-            plt.title("New vs Existing Customers Revenue Overview")
-            plt.xlabel("Month")
-            plt.ylabel("Revenue (In millions)")
-            plt.legend(loc="lower left")
-            plt.xlim([0, 12])
-            st.pyplot(plt)
+        # New vs Existing Users
+        st.subheader("New vs Existing Users")
+        df_first_purchase = df.groupby(["CustomerID"])["InvoiceDate"].min().reset_index()
+        df_first_purchase.columns = ["CustomerID", "FirstPurchaseDate"]
+        df = pd.merge(df, df_first_purchase, on="CustomerID")
+        df["UserType"] = "New"
+        df.loc[df["InvoiceDate"] > df["FirstPurchaseDate"], "UserType"] = "Existing"
+        # New vs Existing User Revenue Analysis
+        df_new_revenue = df.groupby(["InvoiceMonth", "InvoiceYear", "UserType"])["Revenue"].sum().reset_index()
+        df_new_revenue["Revenue"] = df_new_revenue["Revenue"] / 1000000
+        plt.figure(figsize=(15, 10))
+        lineplot(x="InvoiceMonth", y="Revenue", hue="UserType", data=df_new_revenue)
+        plt.title("New vs Existing Customers Revenue Overview")
+        plt.xlabel("Month")
+        plt.ylabel("Revenue (In millions)")
+        plt.legend(loc="lower left")
+        plt.xlim([0, 12])
+        st.pyplot(plt)
 
 elif selection == 'Analysis':
     st.subheader('Display data')
@@ -138,7 +141,6 @@ elif selection == 'Analysis':
         # data description
         st.markdown("Descriptive statistics ")
         st.write(df.describe())
-
 
 # adding html  Template
 footer_temp = """
