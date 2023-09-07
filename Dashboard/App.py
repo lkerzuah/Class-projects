@@ -1,5 +1,3 @@
-import query
-import selection
 import streamlit as st
 import pandas as pd
 import seaborn as sns
