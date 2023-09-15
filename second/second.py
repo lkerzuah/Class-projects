@@ -7,7 +7,7 @@ warnings.filterwarnings("ignore")
 
 st.set_page_config(page_title="superstore", page_icon=":Bar_chart:", layout="wide")
 
-st.title(":bar_chart: Sample superstore EDA")
+st.title(":bar_chart: My superstore EDA Application")
 st.markdown("<style>div.block-container{padding-top:1rem;</style>", unsafe_allow_html=True)
 
 f1 = st.file_uploader(":file_folder: upload a file", type=(["csv","txt","xlsx","xls"]))
