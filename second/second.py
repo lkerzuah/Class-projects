@@ -1,7 +1,6 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-import PIL
 import os
 import warnings
 warnings.filterwarnings("ignore")
@@ -115,7 +114,7 @@ with st.expander("View Data of TimeSeries:"):
     st.download_button("Download Data", data = csv, file_name="TimeSeries.csv", mime="text/csv")
 
 # create a treem based on Region, Category, sub-Category
-st.subheader("Hierarchical View of Sales uising TreeMap")
+st.subheader("Hierarchical View of Sales using TreeMap")
 fig3 = px.treemap(filtered_df,path= ["Region", "Category", "Sub-Category"],values="Sales", hover_data=["Sales"], color="Sub-Category")
 fig3.update_layout(width = 800, height = 650)
 st.plotly_chart(fig3,use_container_width=True)
