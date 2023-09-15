@@ -60,3 +60,6 @@ Pillow==9.0.1
 streamlit==1.10.0
 tensorflow==2.9.1
 protobuf<3.20,>=3.9.2
+streamlit==1.24.1
+pandas>2.0
+numpy<=1.25.1
