@@ -2,6 +2,7 @@ import streamlit as st
 import plotly.express as px
 import numpy
 import pandas as pd
+from docx import ddocument
 import os
 import warnings
 warnings.filterwarnings("ignore")
@@ -160,6 +161,15 @@ with st.expander("View Date"):
 # Download Original DataSet
 csv = df.to_csv(index=False).encode("utf-8")
 st.download_button("Download Original Data", data= csv, file_name="Data.csv", mime="text/csv")
+
+
+doc = Document()
+section = doc.sections[0]
+footer = section.footer
+footer_para = footer.paragraphs[0]
+footer_para.text = "This Dashboard was  Created by: Levis V. Kerzuah "
+doc.add_heading('Footer Section', 0)
+doc.save('gfg.docx')
 
 
 
