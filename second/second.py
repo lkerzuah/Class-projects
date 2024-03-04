@@ -1,26 +1,24 @@
 import streamlit as st
 import plotly.express as px
-import numpy
 import pandas as pd
-from docx import ddocument
 import os
 import warnings
 warnings.filterwarnings("ignore")
 
 st.set_page_config(page_title="superstore", page_icon=":Bar_chart:", layout="wide")
 
-st.title(":bar_chart: My superstore EDA Application")
+st.title(":bar_chart: Sample superstore EDA")
 st.markdown("<style>div.block-container{padding-top:1rem;</style>", unsafe_allow_html=True)
 
-f1 = st.file_uploader(":file_folder: upload a file", type=(["csv", "txt", "xlsx", "xls"]))
+f1 = st.file_uploader(":file_folder: upload a file", type=(["csv","txt","xlsx","xls"]))
 if f1 is not None:
     filename = f1.name
-    st.write(filename, encoding="ISO-8859-1")
+    st.write(filename, encoding = "ISO-8859-1")
     df = pd.read_csv(filename)
 else:
     os.chdir(r"C:\Users\varte\OneDrive\Desktop\Data Science Course\Class projects\second")
-    df = pd.read_csv("superstore.csv", encoding="ISO-8859-1")
-col1, col2, = st.columns(2)
+    df = pd.read_csv("superstore.csv", encoding = "ISO-8859-1")
+col1, col2, = st.columns((2))
 df["Order Date"] = pd.to_datetime(df["Order Date"])
 
 # Getting the min and max date
@@ -33,7 +31,7 @@ with col1:
 with col2:
     date2 = pd.to_datetime(st.date_input("end Date", endDate))
 
-df = df[(df["Order Date"] >= date1) & (df["Order Date"] <= date2)].copy()
+df = df[(df["Order Date"]>= date1) & (df["Order Date"]<= date2)].copy()
 
 # create for Region
 st.sidebar.header("Choose your filter:")
@@ -74,17 +72,17 @@ elif city:
 else:
     filtered_df = df3[df3["Region"].isin(Region) & df3["State"].isin(state) & df3["City"].isin(City)]
 
-Category_df = filtered_df.groupby(by=["Category"], as_index=False)["Sales"].sum()
+Category_df = filtered_df.groupby(by=["Category"], as_index = False)["Sales"].sum()
 with col1:
     st.subheader("Sales Category")
-    fig = px.bar(Category_df, x="Category", y="Sales", text=["${:,.2f}".format(x) for x in Category_df["Sales"]],
-                 template="seaborn")
-    st.plotly_chart(fig, use_container_width=True, height=200)
+    fig = px.bar(Category_df, x = "Category", y = "Sales", text=["${:,.2f}".format(x) for x in Category_df["Sales"]],
+                 template = "seaborn")
+    st.plotly_chart(fig,use_container_width=True, height =200)
 
 with col2:
     st.subheader("Sales by Region")
-    fig = px.pie(filtered_df, values="Sales",names="Region", hole=0.5)
-    fig.update_traces(text=filtered_df["Region"], textposition="outside")
+    fig = px.pie(filtered_df, values="Sales",names="Region", hole = 0.5)
+    fig.update_traces(text= filtered_df["Region"], textposition="outside")
     st.plotly_chart(fig,use_container_width=200)
 
 col1, col2 = st.columns(2)
@@ -92,15 +90,15 @@ col1, col2 = st.columns(2)
 with col1:
     with st.expander("category_viewData"):
         st.write(Category_df.style.background_gradient(cmap="Blues"))
-        csv = Category_df.to_csv(index=False).encode("utf-8")
-        st.download_button("Download Data", data=csv, file_name="category.csv", mime="text/csv",
+        csv = Category_df.to_csv(index= False).encode("utf-8")
+        st.download_button("Download Data", data= csv,file_name = "category.csv", mime = "text/csv",
                            help="click to download the CSV / text file")
 with col2:
     with st.expander("Region_viewData"):
-        region = filtered_df.groupby(by="Region", as_index=False)["Sales"].sum()
-        st.write(region.style.background_gradient(cmap="Oranges"))
+        region = filtered_df.groupby(by= "Region", as_index=False)["Sales"].sum()
+        st.write(region.style.background_gradient(cmap= "Oranges"))
         csv = region.to_csv(index=False).encode("utf-8")
-        st.download_button("Download Data", data=csv, file_name="Region.csv", mime="text/csv",
+        st.download_button("Download Data", data=csv,file_name="Region.csv", mime ="text/csv",
                            help="click to download the CSV / text file")
 
 filtered_df["month_year"] = filtered_df["Order Date"].dt.to_period("M")
@@ -108,7 +106,7 @@ st.subheader("Time Series Analysis")
 
 linechart = pd.DataFrame(filtered_df.groupby(filtered_df["month_year"].dt.strftime("%Y: %b"))["Sales"].sum()).reset_index()
 fig2 = px.line(linechart, x="month_year", y="Sales", labels={"Sales": "Amount"}, height=500, width=1000, template="gridon")
-st.plotly_chart(fig2, use_container_width=True)
+st.plotly_chart(fig2,use_container_width=True)
 
 with st.expander("View Data of TimeSeries:"):
     st.write(linechart.T.style.background_gradient(cmap="Blues"))
@@ -116,60 +114,83 @@ with st.expander("View Data of TimeSeries:"):
     st.download_button("Download Data", data = csv, file_name="TimeSeries.csv", mime="text/csv")
 
 # create a treem based on Region, Category, sub-Category
-st.subheader("Hierarchical View of Sales using TreeMap")
-fig3 = px.treemap(filtered_df, path=["Region", "Category", "Sub-Category"], values="Sales", hover_data=["Sales"], color="Sub-Category")
-fig3.update_layout(width=800, height=650)
-st.plotly_chart(fig3, use_container_width=True)
+st.subheader("Hierarchical View of Sales uising TreeMap")
+fig3 = px.treemap(filtered_df,path= ["Region", "Category", "Sub-Category"],values="Sales", hover_data=["Sales"], color="Sub-Category")
+fig3.update_layout(width = 800, height = 650)
+st.plotly_chart(fig3,use_container_width=True)
 
-chart1, chart2 = st.columns(2)
+chart1, chart2 = st.columns((2))
 
 with chart1:
     st.subheader("Segment of Sales")
     fig = px.pie(filtered_df, values="Sales", names="Segment", template="plotly_dark")
-    fig.update_traces(text=filtered_df["Segment"], textposition="inside")
-    st.plotly_chart(fig, use_container_width=True)
+    fig.update_traces(text = filtered_df["Segment"], textposition = "inside")
+    st.plotly_chart(fig,use_container_width=True)
 
 with chart2:
     st.subheader("Category of Sales")
     fig = px.pie(filtered_df, values="Sales", names="Category", template="gridon")
-    fig.update_traces(text=filtered_df["Category"], textposition="inside")
-    st.plotly_chart(fig, use_container_width=True)
+    fig.update_traces(text = filtered_df["Category"], textposition = "inside")
+    st.plotly_chart(fig,use_container_width=True)
 
 import plotly.figure_factory as ff
 st.subheader(":point_right: Month of Sub-Category Sales Summary")
 with st.expander("Summary_Table"):
-    df_sample = df[0:5][["Region","State", "City", "Category", "Sales", "Profit", "Quantity"]]
+    df_sample = df[0:5][["Region","State", "City", "Category","Sales","Profit","Quantity"]]
     fig = ff.create_table(df_sample, colorscale="cividis")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig,use_container_width=True)
 
     st.markdown("Month of Sub-Category Table")
     filtered_df["month"] = filtered_df["Order Date"].dt.month_name()
-    Sub_Category_year = pd.pivot_table(data=filtered_df, values="Sales", index=["Sub-Category"], columns="month")
+    Sub_Category_year = pd.pivot_table(data=filtered_df,values="Sales",index=["Sub-Category"], columns="month")
     st.write(Sub_Category_year.style.background_gradient(cmap="Blues"))
 
 # create  a scatter plot
 
-date1 = px.scatter(filtered_df, x="Sales", y="Profit", size="Quantity")
+date1 = px.scatter(filtered_df, x = "Sales", y = "Profit", size="Quantity")
 date1["layout"].update(title="Relationship between Sales and Profits using Scatter plot",
-                       titlefont=dict(size=20), xaxis=dict(title="Sales", titlefont=dict(size=19)),
-                       yaxis=dict(title="Profit", titlefont=dict(size=19)))
-st.plotly_chart(date1, use_container_width=True)
+                       titlefont = dict(size=20), xaxis = dict(title="Sales", titlefont=dict(size=19)),
+                       yaxis = dict(title="Profit", titlefont=dict(size=19)))
+st.plotly_chart(date1,use_container_width=True)
 
 with st.expander("View Date"):
-    st.write(filtered_df.iloc[:500, 1:20:2].style.background_gradient(cmap="Oranges"))
+    st.write(filtered_df.iloc[:500,1:20:2].style.background_gradient(cmap="Oranges"))
 
 # Download Original DataSet
 csv = df.to_csv(index=False).encode("utf-8")
 st.download_button("Download Original Data", data= csv, file_name="Data.csv", mime="text/csv")
 
+footer="""<style>
+a:link , a:visited{
+color: blue;
+background-color: transparent;
+text-decoration: underline;
+}
 
-doc = Document()
-section = doc.sections[0]
-footer = section.footer
-footer_para = footer.paragraphs[0]
-footer_para.text = "This Dashboard was  Created by: Levis V. Kerzuah "
-doc.add_heading('Footer Section', 0)
-doc.save('gfg.docx')
+a:hover,  a:active {
+color: red;
+background-color: transparent;
+text-decoration: underline;
+}
+
+.footer {
+position: fixed;
+left: 0;
+bottom: 0;
+width: 100%;
+background-color: Black;
+color: White;
+text-align: center;
+}
+</style>
+<div class="footer">
+<p>Developed by: <a style='display: block; text-align: center;' href="https://github.com/lkerzuah/" 
+target="_blank"> Levis V. Kerzuah </a></p>
+</div>
+"""
+st.markdown(footer,unsafe_allow_html=True)
+
+
 
 
 
