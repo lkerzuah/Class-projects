@@ -10,8 +10,6 @@ st.set_page_config(page_title="superstore", page_icon=":Bar_chart:", layout="wid
 st.title(":bar_chart: Sample superstore EDA")
 st.markdown("<style>div.block-container{padding-top:1rem;</style>", unsafe_allow_html=True)
 
-f1 = st.file_uploader(":file_folder: upload a file", type=(["csv","txt","xlsx","xls"]))
-# File upload widget
 f1 = st.file_uploader("Upload a CSV file", type=["csv"])
 
 if f1 is not None:
